@@ -9,22 +9,22 @@ Satser læses defensivt fra ..rates_2026 hvis muligt, ellers lokale fallbacks
 
 from __future__ import annotations
 
+from ..models import FradragsForslag, Profil, Skatteoplysninger
+from .koersel import beregn_koerselsfradrag
+
 try:  # pragma: no cover - defensiv import
     from ..rates_2026 import (
+        FRADRAG_VAERDI_PROCENT,
+        GAVER_8A_MAX,
         HAANDVAERKERFRADRAG_MAX,
         SERVICEFRADRAG_MAX,
-        GAVER_8A_MAX,
     )
 except ImportError:
     HAANDVAERKERFRADRAG_MAX = 9_000.0  # kr/person 2026, grønt håndværkerfradrag, felt 460
     SERVICEFRADRAG_MAX = 18_300.0  # kr/person 2026, servicefradrag, felt 461
     GAVER_8A_MAX = 20_000.0  # kr/person 2026, §8A gaver, rubrik 55
-
-# Grov værdi af et fradrag: ca. bundskat + kommuneskat, uden topskat/mellemskat-præcision.
-FRADRAG_VAERDI_PROCENT = 0.26
-
-from ..models import FradragsForslag, Profil, Skatteoplysninger
-from .koersel import beregn_koerselsfradrag
+    # Grov værdi af et fradrag: ca. bundskat + kommuneskat, uden topskat/mellemskat-præcision.
+    FRADRAG_VAERDI_PROCENT = 0.26
 
 
 def _er_lav(vaerdi: float | None, taerskel: float = 0.0) -> bool:

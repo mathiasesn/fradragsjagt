@@ -6,7 +6,7 @@ Alt gemmes lokalt. Intet forlader maskinen.
 from __future__ import annotations
 
 import json
-from dataclasses import asdict
+from dataclasses import asdict, fields
 
 from .models import Civilstand, Profil
 
@@ -115,5 +115,8 @@ def load_profil(path: str = DEFAULT_PATH) -> Profil:
             f"Ingen profil fundet på '{path}'. Kør 'fradragsjagt setup' først."
         ) from exc
 
-    data["civilstand"] = Civilstand(data["civilstand"])
+    civilstand = data.get("civilstand", Civilstand.ENLIG.value)
+    data["civilstand"] = civilstand if isinstance(civilstand, Civilstand) else Civilstand(civilstand)
+    kendte_felter = {f.name for f in fields(Profil)}
+    data = {k: v for k, v in data.items() if k in kendte_felter}
     return Profil(**data)

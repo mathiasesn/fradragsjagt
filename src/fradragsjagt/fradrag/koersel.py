@@ -15,16 +15,19 @@ hvis det importeres alene uden resten af pakken.
 
 from __future__ import annotations
 
+from ..models import FradragsForslag
+
 try:  # pragma: no cover - defensiv import
     from ..rates_2026 import (
-        KOERSEL_SATS_NORMAL,
-        KOERSEL_SATS_LANG,
-        KOERSEL_SATS_YDERKOMMUNE,
+        EKSTRA_BEFORDRING_ANDEL,
+        EKSTRA_BEFORDRING_INDKOMST_SLUT,
+        EKSTRA_BEFORDRING_INDKOMST_START,
+        EKSTRA_BEFORDRING_MAX,
         KOERSEL_BUNDGRAENSE_KM,
         KOERSEL_LANG_GRAENSE_KM,
-        EKSTRA_BEFORDRING_MAX,
-        EKSTRA_BEFORDRING_INDKOMST_START,
-        EKSTRA_BEFORDRING_INDKOMST_SLUT,
+        KOERSEL_SATS_LANG,
+        KOERSEL_SATS_NORMAL,
+        KOERSEL_SATS_YDERKOMMUNE,
     )
 except ImportError:  # rates_2026 findes ikke (endnu) eller mangler felter
     KOERSEL_SATS_NORMAL = 2.28  # kr/km, 25-120 km/dag
@@ -35,8 +38,7 @@ except ImportError:  # rates_2026 findes ikke (endnu) eller mangler felter
     EKSTRA_BEFORDRING_MAX = 30_800.0  # kr/år
     EKSTRA_BEFORDRING_INDKOMST_START = 341_500.0  # kr, aftrapning starter
     EKSTRA_BEFORDRING_INDKOMST_SLUT = 391_500.0  # kr, aftrapning slutter (0 kr herefter)
-
-from ..models import FradragsForslag
+    EKSTRA_BEFORDRING_ANDEL = 0.64  # andel af almindeligt befordringsfradrag
 
 
 def _daglig_fradragsberettiget_km(km_hver_vej: float) -> float:
@@ -80,7 +82,7 @@ def _ekstra_befordringsfradrag(aarsindkomst: float, kommunalt_fradrag: float) ->
         andel = 1.0 - (aarsindkomst - EKSTRA_BEFORDRING_INDKOMST_START) / spaend
         andel = max(0.0, min(1.0, andel))
 
-    return min(EKSTRA_BEFORDRING_MAX, kommunalt_fradrag) * andel
+    return min(EKSTRA_BEFORDRING_MAX, EKSTRA_BEFORDRING_ANDEL * kommunalt_fradrag) * andel
 
 
 def beregn_koerselsfradrag(

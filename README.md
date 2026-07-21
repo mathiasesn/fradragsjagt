@@ -18,7 +18,7 @@ setup  →  parse  →  beregn  →  fradragstjek  →  rapport
 1. **`fradragsjagt setup`** — opret en lokal profil (kommune, kirkeskat, civilstand, pendlerafstand, fagforening, boligejer).
 2. **Hent dine dokumenter selv** fra [TastSelv](https://www.skat.dk): log ind med MitID, og gem **årsopgørelse**, **forskudsopgørelse** og **R75/skatteoplysninger** som PDF. *(fradragsjagt automatiserer aldrig MitID-login — det er hverken lovligt eller nødvendigt.)*
 3. **`fradragsjagt parse dine-pdfer.pdf`** — parser PDF'erne til strukturerede felter, lokalt.
-4. **`fradragsjagt beregn`** — beregner din skat med 2026-satser for alle 98 kommuner.
+4. **`fradragsjagt beregn`** — beregner din skat med 2026-satser. Kommuneskat for en række kommuner er indbygget; ukendte kommuner bruger landsgennemsnittet, indtil den fulde 98-kommuners-tabel er komplet.
 5. **`fradragsjagt fradragstjek`** — gennemgår dine data for oversete fradrag (drafter-reviewer-mønster: én agent foreslår, én verificerer).
 6. **`fradragsjagt rapport`** — samler alt til én rapport: *"her er dine sandsynlige oversete fradrag, og sådan indberetter du dem selv (felt X)."*
 

@@ -5,37 +5,12 @@ from __future__ import annotations
 import json
 import os
 
-from ..models import Civilstand, Profil, Skatteoplysninger
+from ..models import Skatteoplysninger
+from ..profile import load_profil
 from .koersel import beregn_koerselsfradrag
 from .rules import find_oversete_fradrag
 
 __all__ = ["find_oversete_fradrag", "beregn_koerselsfradrag", "run_fradragstjek"]
-
-
-def _load_profil(path: str) -> Profil:
-    with open(path, encoding="utf-8") as f:
-        data = json.load(f)
-
-    civilstand = data.get("civilstand", Civilstand.ENLIG.value)
-    if isinstance(civilstand, Civilstand):
-        pass
-    else:
-        civilstand = Civilstand(civilstand)
-
-    kendte_felter = {
-        "kommune",
-        "kirkeskattemedlem",
-        "civilstand",
-        "pendler_km_hver_vej",
-        "arbejdsdage_pr_aar",
-        "bor_i_yderkommune",
-        "fagforening",
-        "a_kasse",
-        "boligejer",
-        "indkomstaar",
-    }
-    kwargs = {k: v for k, v in data.items() if k in kendte_felter and k != "civilstand"}
-    return Profil(civilstand=civilstand, **kwargs)
 
 
 def _load_oplysninger(path: str) -> Skatteoplysninger:
@@ -81,8 +56,8 @@ def run_fradragstjek(oplysninger_path: str, profil_path: str = "profil.json") ->
         return 1
 
     try:
-        profil = _load_profil(profil_path)
-    except (json.JSONDecodeError, OSError, ValueError, TypeError) as e:
+        profil = load_profil(profil_path)
+    except (json.JSONDecodeError, OSError, ValueError, TypeError, FileNotFoundError) as e:
         print(f"Kunne ikke læse profilen '{profil_path}': {e}")
         return 1
 

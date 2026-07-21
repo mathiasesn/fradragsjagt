@@ -74,6 +74,31 @@ JOBFRADRAG_PCT = 4.50
 JOBFRADRAG_BUNDGRAENSE = 235_200.0
 JOBFRADRAG_MAKS = 3_100.0
 
+# --- Kørselsfradrag (befordringsfradrag) -----------------------------------------
+# Kilde: skat.dk, kilometersatser til befordringsfradrag 2026 (bør verificeres).
+KOERSEL_SATS_NORMAL = 2.28  # kr/km, 25-120 km/dag
+KOERSEL_SATS_LANG = 1.14  # kr/km, over 120 km/dag
+KOERSEL_SATS_YDERKOMMUNE = 2.53  # kr/km, yderkommuner (ingen reduktion over 120 km)
+KOERSEL_BUNDGRAENSE_KM = 24.0  # km/dag (samlet tur/retur) uden fradrag
+KOERSEL_LANG_GRAENSE_KM = 120.0  # km/dag hvor lavere sats starter
+
+# --- Ekstra befordringsfradrag for lavindkomst ------------------------------------
+# Kilde: skat.dk, ekstra befordringsfradrag for lav indkomst (bør verificeres).
+EKSTRA_BEFORDRING_MAX = 30_800.0  # kr/år, loft over det ekstra fradrag
+EKSTRA_BEFORDRING_INDKOMST_START = 341_500.0  # kr, aftrapning starter
+EKSTRA_BEFORDRING_INDKOMST_SLUT = 391_500.0  # kr, aftrapning slutter (0 kr herefter)
+# Andel af det almindelige befordringsfradrag, der udgør grundlaget for det
+# ekstra fradrag, før loft og aftrapning. Bør verificeres mod skat.dk.
+EKSTRA_BEFORDRING_ANDEL = 0.64
+
+# --- Håndværkerfradrag / servicefradrag / gaver (§8A) ------------------------------
+HAANDVAERKERFRADRAG_MAX = 9_000.0  # kr/person 2026, grønt håndværkerfradrag, felt 460
+SERVICEFRADRAG_MAX = 18_300.0  # kr/person 2026, servicefradrag, felt 461
+GAVER_8A_MAX = 20_000.0  # kr/person 2026, §8A gaver, rubrik 55
+
+# --- Grov fradragsværdi (bundskat + kommuneskat, ikke marginalskat-præcist) --------
+FRADRAG_VAERDI_PROCENT = 0.26
+
 
 @dataclass(frozen=True)
 class KommuneSats:

@@ -37,6 +37,7 @@ from pathlib import Path
 
 from . import rates_2026 as rates
 from .models import Profil, Skatteberegning, Skatteoplysninger
+from .profile import load_profil
 
 
 def beregn_skat(oplysninger: Skatteoplysninger, profil: Profil) -> Skatteberegning:
@@ -147,24 +148,6 @@ def beregn_skat(oplysninger: Skatteoplysninger, profil: Profil) -> Skatteberegni
     )
 
 
-def _profil_fra_json(data: dict) -> Profil:
-    civilstand = data.get("civilstand", "enlig")
-    from .models import Civilstand
-
-    return Profil(
-        kommune=data.get("kommune", ""),
-        kirkeskattemedlem=data.get("kirkeskattemedlem", False),
-        civilstand=Civilstand(civilstand) if not isinstance(civilstand, Civilstand) else civilstand,
-        pendler_km_hver_vej=data.get("pendler_km_hver_vej", 0.0),
-        arbejdsdage_pr_aar=data.get("arbejdsdage_pr_aar", 216),
-        bor_i_yderkommune=data.get("bor_i_yderkommune", False),
-        fagforening=data.get("fagforening", False),
-        a_kasse=data.get("a_kasse", False),
-        boligejer=data.get("boligejer", False),
-        indkomstaar=data.get("indkomstaar", 2026),
-    )
-
-
 def _oplysninger_fra_json(data: dict) -> Skatteoplysninger:
     kendte_felter = {
         "loen",
@@ -211,9 +194,8 @@ def run_beregn(oplysninger_path: str, profil_path: str = "profil.json") -> int:
         return 1
 
     try:
-        profil_data = json.loads(pr_path.read_text(encoding="utf-8"))
-        profil = _profil_fra_json(profil_data)
-    except (json.JSONDecodeError, ValueError) as e:
+        profil = load_profil(str(pr_path))
+    except (json.JSONDecodeError, ValueError, FileNotFoundError, OSError) as e:
         print(f"Fejl: kunne ikke læse profilfilen '{pr_path}': {e}", file=sys.stderr)
         return 1
 
