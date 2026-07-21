@@ -1,0 +1,17 @@
+# Skattedata må ALDRIG committes. Alt lokalt, intet i git.
+*.pdf
+skatteoplysninger.json
+fradragsjagt-rapport.md
+profil.json
+.fradragsjagt/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/

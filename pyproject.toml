@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fradragsjagt"
+version = "0.1.0"
+description = "Gratis, open source, lokal dansk fradrags- og skatteassistent. Kører på din egen maskine."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Mathias Nielsen" }]
+keywords = ["skat", "fradrag", "danmark", "årsopgørelse", "tax", "denmark"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Natural Language :: Danish",
+    "Environment :: Console",
+]
+dependencies = [
+    "pypdf>=4.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+fradragsjagt = "fradragsjagt.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/mathiasn1/fradragsjagt"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fradragsjagt"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

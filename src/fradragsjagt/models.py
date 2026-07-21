@@ -1,0 +1,90 @@
+"""Delte datamodeller — kontrakten mellem alle moduler i fradragsjagt.
+
+Alle beløb er i danske kroner (DKK) medmindre andet er angivet.
+Ingen af disse modeller må indeholde CPR eller andre direkte identifikatorer.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Optional
+
+
+class Civilstand(str, Enum):
+    ENLIG = "enlig"
+    GIFT = "gift"
+
+
+@dataclass
+class Profil:
+    """Lokal brugerprofil (fra `fradragsjagt setup`). Gemmes lokalt som JSON."""
+
+    kommune: str
+    kirkeskattemedlem: bool = False
+    civilstand: Civilstand = Civilstand.ENLIG
+    # Pendling
+    pendler_km_hver_vej: float = 0.0
+    arbejdsdage_pr_aar: int = 216
+    bor_i_yderkommune: bool = False
+    # Medlemskaber / status
+    fagforening: bool = False
+    a_kasse: bool = False
+    boligejer: bool = False
+    indkomstaar: int = 2026
+
+
+@dataclass
+class Skatteoplysninger:
+    """Strukturerede felter parset fra årsopgørelse / forskudsopgørelse / R75.
+
+    Feltnavne følger så vidt muligt skat.dk's rubrik-/feltnumre i kommentarer.
+    Værdier er None hvis de ikke kunne parses (så motoren kan skelne 0 fra ukendt).
+    """
+
+    loen: Optional[float] = None  # rubrik 11
+    am_bidrag_indeholdt: Optional[float] = None
+    a_skat_indeholdt: Optional[float] = None
+    renteudgifter: Optional[float] = None  # rubrik 41
+    fagforening_a_kasse: Optional[float] = None  # rubrik 50/52
+    befordringsfradrag: Optional[float] = None  # rubrik 51
+    haandvaerkerfradrag: Optional[float] = None  # felt 460
+    servicefradrag: Optional[float] = None  # felt 461
+    gaver_almenvelgoerende: Optional[float] = None  # §8A, rubrik 55
+    pensionsindbetaling: Optional[float] = None
+    aktieindkomst: Optional[float] = None
+    raw: dict = field(default_factory=dict)  # øvrige rå felter, felt-nr -> værdi
+
+
+@dataclass
+class Skatteberegning:
+    """Resultat af skattemotoren for et givet indkomstår."""
+
+    personlig_indkomst: float
+    skattepligtig_indkomst: float
+    am_bidrag: float
+    bundskat: float
+    kommuneskat: float
+    kirkeskat: float
+    mellemskat: float = 0.0
+    topskat: float = 0.0
+    top_topskat: float = 0.0
+    beskaeftigelsesfradrag: float = 0.0
+    jobfradrag: float = 0.0
+    personfradrag_vaerdi: float = 0.0
+    samlet_skat: float = 0.0
+    detaljer: dict = field(default_factory=dict)
+
+
+@dataclass
+class FradragsForslag:
+    """Ét oversete-fradrag-forslag fundet af fradragstjekket."""
+
+    navn: str
+    felt: str  # skat.dk felt/rubrik-nummer til selvangivelse
+    estimeret_fradrag: float  # kr. der kan trækkes fra
+    estimeret_skattebesparelse: float  # ca. 26% eller marginalskat
+    begrundelse: str
+    saadan_indberetter_du: str
+    sikkerhed: str = "mulig"  # "mulig" | "sandsynlig" | "kræver dokumentation"
+    verificeret: bool = False  # sat af reviewer-agenten
