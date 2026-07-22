@@ -31,10 +31,11 @@ Regler på plads:
 
 **Mulig senere forfining (ikke gjort):** de fleste regler er samme form — *"hvis profil-flag sat og felt tomt → flag det"*. Proveniens (`felt`/`kilde`) ligger i dag som fri tekst duplikeret i hver regel. En deklarativ variant — `@fradragsregel` med en beskriver (`profil_flag`, `oplysninger_felt`, en struktureret `Kilde`) — kunne gøre de simple regler til datarækker og validere felt-numre ét sted. Kun de beregnede regler (kørsel, rejse, håndværker) forbliver funktioner. Udskudt: det er en omskrivning af alle regler + `models.py` + `report.py` + tests, ikke en oprydning.
 
-### 2. Tidlig årsopgørelse 🟢
+### 2. Tidlig årsopgørelse 🟢 *(implementeret)*
 
 Rapportvisning oven på den eksisterende motor: projekteret restskat / overskydende skat.
 
+- **Status:** implementeret. `aarsopgoerelse.projicer_aarsopgoerelse` (ren funktion) sammenholder `beregning.samlet_skat` med indeholdt A-skat + AM-bidrag og udleder restskat/overskydende skat. `byg_rapport` viser sektionen "Tidlig årsopgørelse" med tydeligt estimat-forbehold; projicerer kun når begge indeholdte beløb er kendt, ellers degraderes pænt. Ingen ny domænelogik i motoren.
 - **Pro:** næsten gratis givet `engine.py`; stærkt headline-output til `rapport`.
 - **Con:** nøjagtighed afhænger af komplet input — kræver tydelig *"estimat"*-forbehold.
 - **Design:** ren rapport-view over eksisterende beregning. Ingen ny domænelogik.
