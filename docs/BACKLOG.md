@@ -8,23 +8,28 @@ Retningslinjen for hele backloggen: vi bygger **beregning og fradragsfund** der 
 
 ## Roadmap
 
-### 1. Udvid fradrags-regelregister 🟢 *(kerne)*
+### 1. Udvid fradrags-regelregister 🟢 *(kerne — implementeret)*
 
 Byg `fradragstjek` ud fra dagens kørselsfradrag-flagskib til et bredt regelregister med per-regel proveniens og felt-nummer på skat.dk.
 
-Kandidat-regler:
-- Håndværkerfradrag / servicefradrag
-- Gaver til godkendte foreninger
-- A-kasse / fagforeningskontingent *(delvist på plads)*
-- Børnebidrag
-- Dobbelt husførelse
-- Rejsefradrag
-- Indskud på pension
-- Tab på aktier (fremførsel)
+- **Status:** implementeret. `rules/`-pakken bruger auto-discovery (pkgutil): hver regel er én fil under `rules/regler/`, dekoreret med `@fradragsregel` og samlet i `REGLER` — nye regler kræver ingen ændringer i delte filer. Hver regel bærer `kilde` (proveniens) + `felt`, og gater konservativt på en `Profil`-flag, så den ikke fyrer spuriøst.
+
+Regler på plads:
+- ✅ Kørselsfradrag *(flagskib, med estimat)*
+- ✅ Håndværkerfradrag / servicefradrag
+- ✅ Gaver til godkendte foreninger *(gated på `stoetter_velgoerenhed`)*
+- ✅ A-kasse / fagforeningskontingent
+- ✅ Børnebidrag
+- ✅ Dobbelt husførelse
+- ✅ Rejsefradrag
+- ✅ Indskud på pension
+- ✅ Tab på aktier (fremførsel)
 
 - **Pro:** projektets flagskib og differentiator — vi viser reglen, ikke en black box.
 - **Con:** regelvedligehold pr. skatteår er den løbende omkostning.
 - **Design:** `rules/`-register hvor hver regel bærer proveniens (kilde på skat.dk) + felt-nummer, så rapporten kan sige *"indberet i felt X, jf. kilde Y"*.
+
+**Mulig senere forfining (ikke gjort):** de fleste regler er samme form — *"hvis profil-flag sat og felt tomt → flag det"*. Proveniens (`felt`/`kilde`) ligger i dag som fri tekst duplikeret i hver regel. En deklarativ variant — `@fradragsregel` med en beskriver (`profil_flag`, `oplysninger_felt`, en struktureret `Kilde`) — kunne gøre de simple regler til datarækker og validere felt-numre ét sted. Kun de beregnede regler (kørsel, rejse, håndværker) forbliver funktioner. Udskudt: det er en omskrivning af alle regler + `models.py` + `report.py` + tests, ikke en oprydning.
 
 ### 2. Tidlig årsopgørelse 🟢
 
