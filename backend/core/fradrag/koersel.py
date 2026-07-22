@@ -116,9 +116,7 @@ def beregn_koerselsfradrag(
                 f"bundgrænsen på {KOERSEL_BUNDGRAENSE_KM:.0f} km, så der er ikke ret til "
                 "befordringsfradrag."
             ),
-            saadan_indberetter_du=(
-                "Intet at indberette — afstanden giver ikke ret til fradrag."
-            ),
+            saadan_indberetter_du=("Intet at indberette — afstanden giver ikke ret til fradrag."),
             sikkerhed="sandsynlig",
         )
 
@@ -143,8 +141,7 @@ def beregn_koerselsfradrag(
         f"Med {km_hver_vej:.0f} km hver vej og {arbejdsdage} arbejdsdage om året kan du "
         f"trække {fradragsberettiget_km_pr_dag:.0f} fradragsberettigede km/dag "
         f"(ud over de første {KOERSEL_BUNDGRAENSE_KM:.0f} km){yderkommune_tekst}, "
-        f"svarende til ca. {kommunalt_fradrag:,.0f} kr i almindeligt befordringsfradrag."
-        .replace(",", ".")
+        f"svarende til ca. {kommunalt_fradrag:,.0f} kr i almindeligt befordringsfradrag.".replace(",", ".")
         + ekstra_tekst
         + " Kørselsfradrag beregnes ikke automatisk af Skattestyrelsen — du skal selv indberette det."
     )

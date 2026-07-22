@@ -19,7 +19,7 @@ endelige 2026-tal først offentliggøres officielt sent på året):
   - Skatteloft (samlet marginalskat af arbejdsindkomst, ekskl. kirkeskat):
     52,07%.
   - Kommuneskat: landsgennemsnit ca. 25,07% for 2026 (bruges som fallback for
-    kommuner, der ikke findes i data/kommuneskat_2026.csv).
+    kommuner, der ikke findes i core/data/kommuneskat_2026.csv).
   - Kirkeskat: landsgennemsnit ca. 0,68%, opkræves kun for medlemmer af
     folkekirken.
   - Beskæftigelsesfradrag: 12,75% af arbejdsindkomst, maks. 63.300 kr.
@@ -99,6 +99,17 @@ GAVER_8A_MAX = 20_000.0  # kr/person 2026, §8A gaver, rubrik 55
 # --- Grov fradragsværdi (bundskat + kommuneskat, ikke marginalskat-præcist) --------
 FRADRAG_VAERDI_PROCENT = 0.26
 
+# --- Fase 2: rejse-, børnebidrags-, dobbelt husførelse- og pensionsfradrag ---------
+# Alle satser nedenfor er bedste-indsats-fremskrivninger og skal verificeres mod de
+# officielle 2026-satser på skat.dk, når Skattestyrelsen har offentliggjort dem endeligt.
+REJSEFRADRAG_MAX = 31_600.0  # kr/år, rubrik 53, loft for rejsefradrag 2026
+REJSE_KOST_SATS = 574.0  # kr/døgn, kost (best-effort)
+REJSE_LOGI_SATS = 246.0  # kr/døgn, logi (best-effort)
+DOBBELT_HUSFOERELSE_SATS_PR_UGE = 508.0  # kr/uge, standardsats (best-effort)
+BOERNEBIDRAG_NORMALBIDRAG_AAR = 20_856.0  # kr/år, normalbidrag 2026 (best-effort);
+# fradrag gælder betalt bidrag ud over grundbeløbet.
+PENSION_FRADRAG_MAX = 66_500.0  # kr., loft for fradrag på ratepension/ophørende livrente 2026 (best-effort)
+
 
 @dataclass(frozen=True)
 class KommuneSats:
@@ -107,7 +118,7 @@ class KommuneSats:
     kirkeskat_pct: float
 
 
-_CSV_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "kommuneskat_2026.csv"
+_CSV_PATH = Path(__file__).resolve().parent / "data" / "kommuneskat_2026.csv"
 
 
 def _load_kommunesatser(csv_path: Path = _CSV_PATH) -> Dict[str, KommuneSats]:

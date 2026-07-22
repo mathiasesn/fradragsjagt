@@ -1,6 +1,6 @@
 import pytest
 
-from fradragsjagt.parsing import _parse_dkk, detect_dokumenttype, parse_skattetekst
+from core.parsing import _parse_dkk, detect_dokumenttype, parse_skattetekst
 
 
 @pytest.mark.parametrize(

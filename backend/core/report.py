@@ -53,9 +53,7 @@ def byg_rapport(
         linjer.append(f"| Personfradrag (værdi) | {_fmt_kr(beregning.personfradrag_vaerdi)} |")
         linjer.append(f"| **Samlet skat** | **{_fmt_kr(beregning.samlet_skat)}** |")
     else:
-        linjer.append(
-            "_Skatteberegningen kunne ikke gennemføres (beregningsmodulet mangler eller fejlede)._"
-        )
+        linjer.append("_Skatteberegningen kunne ikke gennemføres (beregningsmodulet mangler eller fejlede)._")
     linjer.append("")
 
     # Fradragsforslag
@@ -82,6 +80,8 @@ def byg_rapport(
             linjer.append("")
             linjer.append(f"- Begrundelse: {f.begrundelse}")
             linjer.append(f"- Sådan indberetter du: {f.saadan_indberetter_du}")
+            if f.kilde:
+                linjer.append(f"- Kilde: {f.kilde}")
             linjer.append(f"- Verificeret: {'ja' if f.verificeret else 'nej'}")
             linjer.append("")
     else:
@@ -113,7 +113,9 @@ def run_rapport(oplysninger_path: str, out: str) -> int:
         print(f"Kunne ikke læse '{oplysninger_path}': {exc}")
         return 1
 
-    oplysninger = Skatteoplysninger(**{k: v for k, v in raw.items() if k in Skatteoplysninger.__dataclass_fields__})
+    oplysninger = Skatteoplysninger(
+        **{k: v for k, v in raw.items() if k in Skatteoplysninger.__dataclass_fields__}
+    )
 
     profil: Profil
     try:

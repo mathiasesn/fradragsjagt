@@ -1,5 +1,5 @@
-from fradragsjagt.fradrag.rules import find_oversete_fradrag
-from fradragsjagt.models import Civilstand, Profil, Skatteoplysninger
+from core.fradrag.rules import find_oversete_fradrag
+from core.models import Civilstand, Profil, Skatteoplysninger
 
 
 def _profil(**overrides):
@@ -32,7 +32,7 @@ def test_flagger_manglende_koerselsfradrag():
 def test_ingen_koersel_forslag_hvis_allerede_indberettet():
     profil = _profil(pendler_km_hver_vej=25)
     # Beregn hvad der forventes, og indberet nogenlunde det samme.
-    from fradragsjagt.fradrag.koersel import beregn_koerselsfradrag
+    from core.fradrag.koersel import beregn_koerselsfradrag
 
     beregnet = beregn_koerselsfradrag(25, 216, False, 450_000)
     oplysninger = Skatteoplysninger(loen=450_000, befordringsfradrag=beregnet.estimeret_fradrag)

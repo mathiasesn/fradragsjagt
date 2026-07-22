@@ -1,7 +1,7 @@
 import pytest
 
-from fradragsjagt.models import Civilstand, Profil
-from fradragsjagt.profile import load_profil, run_setup, save_profil
+from core.models import Civilstand, Profil
+from core.profile import load_profil, run_setup, save_profil
 
 
 def test_save_and_load_roundtrip(tmp_path):

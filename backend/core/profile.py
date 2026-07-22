@@ -111,9 +111,7 @@ def load_profil(path: str = DEFAULT_PATH) -> Profil:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
     except FileNotFoundError as exc:
-        raise FileNotFoundError(
-            f"Ingen profil fundet på '{path}'. Kør 'fradragsjagt setup' først."
-        ) from exc
+        raise FileNotFoundError(f"Ingen profil fundet på '{path}'. Kør 'fradragsjagt setup' først.") from exc
 
     civilstand = data.get("civilstand", Civilstand.ENLIG.value)
     data["civilstand"] = civilstand if isinstance(civilstand, Civilstand) else Civilstand(civilstand)

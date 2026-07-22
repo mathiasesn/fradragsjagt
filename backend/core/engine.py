@@ -69,11 +69,7 @@ def beregn_skat(oplysninger: Skatteoplysninger, profil: Profil) -> Skatteberegni
 
     bundskat = skattepligtig_indkomst * rates.BUNDSKAT_PCT / 100.0
     kommuneskat = skattepligtig_indkomst * sats.kommuneskat_pct / 100.0
-    kirkeskat = (
-        skattepligtig_indkomst * sats.kirkeskat_pct / 100.0
-        if profil.kirkeskattemedlem
-        else 0.0
-    )
+    kirkeskat = skattepligtig_indkomst * sats.kirkeskat_pct / 100.0 if profil.kirkeskattemedlem else 0.0
 
     mellemskat_grundlag = max(
         min(personlig_indkomst_efter_am, rates.MELLEMSKAT_TOPGRAENSE) - rates.MELLEMSKAT_BUNDGRAENSE,
@@ -90,21 +86,17 @@ def beregn_skat(oplysninger: Skatteoplysninger, profil: Profil) -> Skatteberegni
     top_topskat_grundlag = max(personlig_indkomst_efter_am - rates.TOP_TOPSKAT_BUNDGRAENSE, 0.0)
     top_topskat = top_topskat_grundlag * rates.TOP_TOPSKAT_PCT / 100.0
 
-    personfradrag_vaerdi = rates.PERSONFRADRAG * (
-        rates.BUNDSKAT_PCT
-        + sats.kommuneskat_pct
-        + (sats.kirkeskat_pct if profil.kirkeskattemedlem else 0.0)
-    ) / 100.0
-
-    samlet_skat = (
-        am_bidrag
-        + bundskat
-        + kommuneskat
-        + kirkeskat
-        + mellemskat
-        + topskat
-        + top_topskat
+    personfradrag_vaerdi = (
+        rates.PERSONFRADRAG
+        * (
+            rates.BUNDSKAT_PCT
+            + sats.kommuneskat_pct
+            + (sats.kirkeskat_pct if profil.kirkeskattemedlem else 0.0)
+        )
+        / 100.0
     )
+
+    samlet_skat = am_bidrag + bundskat + kommuneskat + kirkeskat + mellemskat + topskat + top_topskat
 
     marginalskat_uden_kirke_pct = (
         rates.BUNDSKAT_PCT
@@ -148,25 +140,6 @@ def beregn_skat(oplysninger: Skatteoplysninger, profil: Profil) -> Skatteberegni
     )
 
 
-def _oplysninger_fra_json(data: dict) -> Skatteoplysninger:
-    kendte_felter = {
-        "loen",
-        "am_bidrag_indeholdt",
-        "a_skat_indeholdt",
-        "renteudgifter",
-        "fagforening_a_kasse",
-        "befordringsfradrag",
-        "haandvaerkerfradrag",
-        "servicefradrag",
-        "gaver_almenvelgoerende",
-        "pensionsindbetaling",
-        "aktieindkomst",
-    }
-    kwargs = {felt: data[felt] for felt in kendte_felter if felt in data}
-    raw = data.get("raw", {})
-    return Skatteoplysninger(raw=raw, **kwargs)
-
-
 def run_beregn(oplysninger_path: str, profil_path: str = "profil.json") -> int:
     """Indlæs profil + skatteoplysninger fra JSON, beregn skat og udskriv resultatet.
 
@@ -179,8 +152,7 @@ def run_beregn(oplysninger_path: str, profil_path: str = "profil.json") -> int:
 
     if not pr_path.exists():
         print(
-            f"Fejl: kunne ikke finde profilfilen '{pr_path}'. "
-            "Kør 'fradragsjagt setup' for at oprette den.",
+            f"Fejl: kunne ikke finde profilfilen '{pr_path}'. Kør 'fradragsjagt setup' for at oprette den.",
             file=sys.stderr,
         )
         return 1
@@ -201,7 +173,7 @@ def run_beregn(oplysninger_path: str, profil_path: str = "profil.json") -> int:
 
     try:
         op_data = json.loads(op_path.read_text(encoding="utf-8"))
-        oplysninger = _oplysninger_fra_json(op_data)
+        oplysninger = Skatteoplysninger.from_dict(op_data)
     except (json.JSONDecodeError, ValueError) as e:
         print(f"Fejl: kunne ikke læse skatteoplysninger-filen '{op_path}': {e}", file=sys.stderr)
         return 1

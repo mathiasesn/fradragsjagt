@@ -5,17 +5,18 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+# Gør 'core'/'cli' importérbare, også når filen køres uden for pytest.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from fradragsjagt import DISCLAIMER
-from fradragsjagt.models import (
+from core import DISCLAIMER
+from core.models import (
     Civilstand,
     FradragsForslag,
     Profil,
     Skatteberegning,
     Skatteoplysninger,
 )
-from fradragsjagt.report import byg_rapport
+from core.report import byg_rapport
 
 
 def _profil() -> Profil:

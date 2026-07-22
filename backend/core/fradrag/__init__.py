@@ -16,23 +16,7 @@ __all__ = ["find_oversete_fradrag", "beregn_koerselsfradrag", "run_fradragstjek"
 def _load_oplysninger(path: str) -> Skatteoplysninger:
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
-
-    kendte_felter = {
-        "loen",
-        "am_bidrag_indeholdt",
-        "a_skat_indeholdt",
-        "renteudgifter",
-        "fagforening_a_kasse",
-        "befordringsfradrag",
-        "haandvaerkerfradrag",
-        "servicefradrag",
-        "gaver_almenvelgoerende",
-        "pensionsindbetaling",
-        "aktieindkomst",
-        "raw",
-    }
-    kwargs = {k: v for k, v in data.items() if k in kendte_felter}
-    return Skatteoplysninger(**kwargs)
+    return Skatteoplysninger.from_dict(data)
 
 
 def run_fradragstjek(oplysninger_path: str, profil_path: str = "profil.json") -> int:
@@ -43,9 +27,7 @@ def run_fradragstjek(oplysninger_path: str, profil_path: str = "profil.json") ->
     """
 
     if not os.path.exists(profil_path):
-        print(
-            f"Fandt ingen lokal profil ('{profil_path}'). Kør 'fradragsjagt setup' først."
-        )
+        print(f"Fandt ingen lokal profil ('{profil_path}'). Kør 'fradragsjagt setup' først.")
         return 1
 
     if not os.path.exists(oplysninger_path):
@@ -80,18 +62,11 @@ def run_fradragstjek(oplysninger_path: str, profil_path: str = "profil.json") ->
         if f.estimeret_fradrag:
             print(f"   Estimeret fradrag: {f.estimeret_fradrag:,.0f} kr".replace(",", "."))
         if f.estimeret_skattebesparelse:
-            print(
-                f"   Estimeret skattebesparelse: {f.estimeret_skattebesparelse:,.0f} kr".replace(
-                    ",", "."
-                )
-            )
+            print(f"   Estimeret skattebesparelse: {f.estimeret_skattebesparelse:,.0f} kr".replace(",", "."))
         print(f"   Begrundelse: {f.begrundelse}")
         print(f"   Sådan indberetter du: {f.saadan_indberetter_du}\n")
         samlet_besparelse += f.estimeret_skattebesparelse
 
     print(f"Samlet estimeret skattebesparelse: {samlet_besparelse:,.0f} kr".replace(",", "."))
-    print(
-        "\nHusk: Dette er et estimat, ikke bindende skatterådgivning. "
-        "Du skal selv indberette på skat.dk."
-    )
+    print("\nHusk: Dette er et estimat, ikke bindende skatterådgivning. Du skal selv indberette på skat.dk.")
     return 0

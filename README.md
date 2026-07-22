@@ -24,10 +24,28 @@ setup  →  parse  →  beregn  →  fradragstjek  →  rapport
 
 ## Installation
 
+Python-koden bor i `backend/`. Installér CLI'en derfra:
+
 ```bash
+cd backend
 pip install -e ".[dev]"
 fradragsjagt --version
 ```
+
+## Projektstruktur
+
+```
+backend/
+  core/    # domænelogik: skatteberegning, satser, fradragsregler, parsing, rapport
+  cli/     # tyndt argparse-lag oven på core
+  tests/   # pytest-suite
+frontend/  # (muligt senere)
+.claude/   # Claude Code agent-lag (skills, kommandoer)
+```
+
+`core` er delt domænelogik; `cli` er et tyndt lag ovenpå. Et kommende `api/`-lag (FastAPI)
+kan tilføjes ved siden af `cli/` og genbruge `core`. Se [`backend/README.md`](backend/README.md)
+for udvikler-kommandoer.
 
 ## Claude Code agent-lag
 
@@ -38,6 +56,10 @@ Ud over CLI'en kan `fradragsjagt` køres som en Claude Code-agent. `.claude/`-ma
 - Skattedata forlader **aldrig** din maskine. `.gitignore` blokerer PDF'er og parsede data fra git.
 - Bruger du Claude Code-laget, så **maskér dit CPR** før data sendes til modellen, og brug en konto/API med træning fravalgt.
 - Ingen NemKonto, ingen fuldmagt, ingen rådgiveradgang (formular 02.052). Vi efterligner **ikke** betalingstjenesternes fuldmagtsmodel.
+
+## Fremtidigt arbejde / To-do
+
+Roadmap og kendte MVP-begrænsninger er flyttet til [`docs/BACKLOG.md`](docs/BACKLOG.md).
 
 ## Ansvarsfraskrivelse
 

@@ -1,11 +1,11 @@
-"""Tests for fradragsjagt.engine (2026 skatteberegning)."""
+"""Tests for core.engine (2026 skatteberegning)."""
 
 from __future__ import annotations
 
 import pytest
 
-from fradragsjagt.engine import beregn_skat
-from fradragsjagt.models import Profil, Skatteoplysninger
+from core.engine import beregn_skat
+from core.models import Profil, Skatteoplysninger
 
 
 TOLERANCE = 5.0  # kr.
@@ -51,7 +51,9 @@ def test_mellemindkomst_paye_case():
     assert b.am_bidrag == pytest.approx(36_000.0, abs=TOLERANCE)
     # personlig_indkomst_efter_am = 414.000
     assert b.beskaeftigelsesfradrag == pytest.approx(52_785.0, abs=TOLERANCE)  # 12.75% * 414.000
-    assert b.jobfradrag == pytest.approx(3_100.0, abs=TOLERANCE)  # rammer maks (4,5% * (414.000-235.200) > 3.100)
+    assert b.jobfradrag == pytest.approx(
+        3_100.0, abs=TOLERANCE
+    )  # rammer maks (4,5% * (414.000-235.200) > 3.100)
     assert b.mellemskat == 0.0
     assert b.topskat == 0.0
     assert b.skattepligtig_indkomst == pytest.approx(304_015.0, abs=TOLERANCE)
@@ -98,7 +100,7 @@ def test_top_topskat_udloeses_over_2592700():
 
 
 def test_ukendt_kommune_bruger_landsgennemsnit_fallback():
-    from fradragsjagt.rates_2026 import (
+    from core.rates_2026 import (
         GENNEMSNITLIG_KIRKESKAT_PCT,
         GENNEMSNITLIG_KOMMUNESKAT_PCT,
     )
@@ -124,7 +126,7 @@ def test_manglende_loen_giver_nul_skat():
 
 
 def test_run_beregn_returnerer_1_hvis_fil_mangler(tmp_path):
-    from fradragsjagt.engine import run_beregn
+    from core.engine import run_beregn
 
     manglende = tmp_path / "findes-ikke.json"
     profil_fil = tmp_path / "profil.json"
@@ -135,7 +137,7 @@ def test_run_beregn_returnerer_1_hvis_fil_mangler(tmp_path):
 
 
 def test_run_beregn_returnerer_1_hvis_profil_mangler(tmp_path):
-    from fradragsjagt.engine import run_beregn
+    from core.engine import run_beregn
 
     op_fil = tmp_path / "oplysninger.json"
     op_fil.write_text('{"loen": 300000}', encoding="utf-8")
@@ -146,12 +148,10 @@ def test_run_beregn_returnerer_1_hvis_profil_mangler(tmp_path):
 
 
 def test_run_beregn_succes(tmp_path, capsys):
-    from fradragsjagt.engine import run_beregn
+    from core.engine import run_beregn
 
     profil_fil = tmp_path / "profil.json"
-    profil_fil.write_text(
-        '{"kommune": "Aarhus", "kirkeskattemedlem": true}', encoding="utf-8"
-    )
+    profil_fil.write_text('{"kommune": "Aarhus", "kirkeskattemedlem": true}', encoding="utf-8")
     op_fil = tmp_path / "oplysninger.json"
     op_fil.write_text('{"loen": 400000}', encoding="utf-8")
 
