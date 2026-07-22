@@ -92,6 +92,8 @@ EKSTRA_BEFORDRING_INDKOMST_SLUT = 391_500.0  # kr, aftrapning slutter (0 kr here
 EKSTRA_BEFORDRING_ANDEL = 0.64
 
 # --- Håndværkerfradrag / servicefradrag / gaver (§8A) ------------------------------
+# Satserne nedenfor er bedste-indsats-fremskrivninger og skal verificeres mod de
+# officielle 2026-satser på skat.dk, når Skattestyrelsen har offentliggjort dem endeligt.
 HAANDVAERKERFRADRAG_MAX = 9_000.0  # kr/person 2026, grønt håndværkerfradrag, felt 460
 SERVICEFRADRAG_MAX = 18_300.0  # kr/person 2026, servicefradrag, felt 461
 GAVER_8A_MAX = 20_000.0  # kr/person 2026, §8A gaver, rubrik 55

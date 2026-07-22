@@ -15,7 +15,7 @@ def tjek_dobbelt_husfoerelse(oplysninger: Skatteoplysninger, profil: Profil) -> 
         forslag.append(
             FradragsForslag(
                 navn="Dobbelt husførelse",
-                felt="53",
+                felt="58",
                 estimeret_fradrag=0.0,
                 estimeret_skattebesparelse=0.0,
                 begrundelse=(
@@ -26,11 +26,11 @@ def tjek_dobbelt_husfoerelse(oplysninger: Skatteoplysninger, profil: Profil) -> 
                     "dobbelt husstand. Antal uger kan ikke estimeres automatisk her."
                 ).replace(",", "."),
                 saadan_indberetter_du=(
-                    "Indberet fradraget under øvrige lønmodtagerudgifter (felt 53) på "
+                    "Indberet fradraget under øvrige lønmodtagerudgifter (felt 58) på "
                     "årsopgørelsen. Du skal kunne dokumentere det midlertidige arbejdssted og "
                     "den dobbelte husførelse."
                 ),
-                kilde="skat.dk – Dobbelt husførelse, felt 53",
+                kilde="skat.dk – Dobbelt husførelse, felt 58",
                 sikkerhed="mulig",
             )
         )
