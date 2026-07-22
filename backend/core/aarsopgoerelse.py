@@ -4,7 +4,9 @@
 den beregnede samlede skat (`Skatteberegning.samlet_skat`, som inkluderer
 AM-bidrag) med den indeholdte skat (A-skat + AM-bidrag) fra
 `Skatteoplysninger`, og udleder om der forventes restskat eller
-overskydende skat.
+overskydende skat. En fuld projektion kræver begge indeholdte beløb
+(A-skat OG AM-bidrag) — mangler ét af dem, er grundlaget ikke
+tilstrækkeligt.
 
 Bemærk: dag-til-dag rente og procenttillæg på restskat (jf. skat.dk's regler
 for betaling efter fristen) modelleres IKKE her — dette er et rent estimat
@@ -23,7 +25,7 @@ def projicer_aarsopgoerelse(
     gennemført skatteberegning. Estimat — ingen rente/procenttillæg."""
 
     tilstraekkeligt_grundlag = (
-        oplysninger.a_skat_indeholdt is not None or oplysninger.am_bidrag_indeholdt is not None
+        oplysninger.a_skat_indeholdt is not None and oplysninger.am_bidrag_indeholdt is not None
     )
     indbetalt = (oplysninger.a_skat_indeholdt or 0.0) + (oplysninger.am_bidrag_indeholdt or 0.0)
     difference = beregning.samlet_skat - indbetalt

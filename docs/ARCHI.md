@@ -56,6 +56,7 @@ fradragsjagt/
       engine.py             # 2026 tax calculation (pure beregn_skat + run_beregn IO wrapper)
       rates_2026.py         # all 2026 rates/thresholds + kommunesats() CSV lookup
       parsing.py            # PDF → Skatteoplysninger (CPR-masking)
+      aarsopgoerelse.py     # projicer_aarsopgoerelse: estimerer restskat/overskydende skat
       profile.py            # setup wizard + save/load Profil JSON
       report.py             # byg_rapport (pure) + run_rapport IO wrapper
       fradrag/
@@ -129,6 +130,7 @@ There is no config file or env-var layer — configuration is **local JSON produ
 - **`Skatteoplysninger`** — parsed tax fields, all `Optional[float]` defaulting to `None` (so the engine distinguishes 0 from unknown). Field comments carry the skat.dk rubrik/felt number (e.g. `loen` = rubrik 11, `befordringsfradrag` = rubrik 51). Has a `raw: dict` for other parsed fields and a **`from_dict` classmethod** that keeps only known dataclass fields (forward-compatible; unknown keys ignored). Prefer `from_dict` when loading JSON.
 - **`Skatteberegning`** — engine output: personlig/skattepligtig indkomst, am_bidrag, bundskat, kommuneskat, kirkeskat, mellemskat/topskat/top_topskat, beskæftigelsesfradrag, jobfradrag, personfradrag_vaerdi, samlet_skat, and a free-form `detaljer: dict`.
 - **`FradragsForslag`** — one overlooked-deduction suggestion: `navn`, `felt`, `estimeret_fradrag`, `estimeret_skattebesparelse`, `begrundelse`, `saadan_indberetter_du`, `sikkerhed` (`"mulig"` | `"sandsynlig"` | `"kræver dokumentation"`), `verificeret` (set by the reviewer agent).
+- **`TidligAarsopgoerelse`** — output of `projicer_aarsopgoerelse`: projiceret restskat/overskydende skat (`difference`, `er_restskat`, `beloeb`) plus `tilstraekkeligt_grundlag` (requires both `a_skat_indeholdt` and `am_bidrag_indeholdt`).
 
 ## 9. Tax Calculation Engine (`core/engine.py` + `rates_2026.py`)
 
@@ -169,7 +171,7 @@ Deduction *value* is estimated crudely as ~26% (`FRADRAG_VAERDI_PROCENT`, roughl
 
 ## 12. Report (`core/report.py`)
 
-`byg_rapport(oplysninger, profil, beregning, forslag) -> str` builds the Danish Markdown report (skatteoverblik table + overlooked-deductions table + "sådan indberetter du" section + `DISCLAIMER`). It **never contains CPR**. `run_rapport` is the IO wrapper that loads inputs and, per principle #7, degrades gracefully if profile/engine/fradrag are unavailable — producing a partial report with a note rather than failing.
+`byg_rapport(oplysninger, profil, beregning, forslag) -> str` builds the Danish Markdown report (skatteoverblik table + "Tidlig årsopgørelse" section, projected restskat/overskydende skat via `aarsopgoerelse.py` + overlooked-deductions table + "sådan indberetter du" section + `DISCLAIMER`). It **never contains CPR**. `run_rapport` is the IO wrapper that loads inputs and, per principle #7, degrades gracefully if profile/engine/fradrag are unavailable — producing a partial report with a note rather than failing.
 
 ## 13. Claude Code Agent Layer (`.claude/`)
 

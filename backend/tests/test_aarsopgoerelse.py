@@ -52,3 +52,10 @@ def test_utilstraekkeligt_grundlag_naar_begge_indeholdte_felter_mangler():
 
     assert opgoerelse.tilstraekkeligt_grundlag is False
     assert opgoerelse.indbetalt_skat == 0.0
+
+
+def test_utilstraekkeligt_grundlag_naar_kun_ét_indeholdt_felt_er_kendt():
+    oplysninger = Skatteoplysninger(a_skat_indeholdt=100000.0, am_bidrag_indeholdt=None)
+    opgoerelse = projicer_aarsopgoerelse(oplysninger, _beregning(150000.0))
+
+    assert opgoerelse.tilstraekkeligt_grundlag is False
