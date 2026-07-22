@@ -31,6 +31,7 @@ class Profil:
     fagforening: bool = False
     a_kasse: bool = False
     boligejer: bool = False
+    stoetter_velgoerenhed: bool = False
     indkomstaar: int = 2026
     # Fase 2-felter (bruges af kommende regler)
     betaler_boernebidrag: bool = False

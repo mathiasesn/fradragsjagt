@@ -13,6 +13,7 @@ def _profil(**overrides):
         fagforening=False,
         a_kasse=False,
         boligejer=False,
+        stoetter_velgoerenhed=False,
         indkomstaar=2026,
     )
     defaults.update(overrides)
@@ -71,9 +72,18 @@ def test_flagger_fagforening_naar_medlem_men_intet_indberettet():
 
 
 def test_flagger_gaver_naar_intet_indberettet():
-    profil = _profil()
+    profil = _profil(stoetter_velgoerenhed=True)
     oplysninger = Skatteoplysninger()
 
     forslag = find_oversete_fradrag(oplysninger, profil)
     navne = [f.navn for f in forslag]
     assert any("Gaver" in n for n in navne)
+
+
+def test_ingen_gaver_forslag_for_standard_profil():
+    profil = _profil()
+    oplysninger = Skatteoplysninger()
+
+    forslag = find_oversete_fradrag(oplysninger, profil)
+    navne = [f.navn for f in forslag]
+    assert not any("Gaver" in n for n in navne)

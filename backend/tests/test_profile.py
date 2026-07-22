@@ -16,6 +16,7 @@ def test_save_and_load_roundtrip(tmp_path):
         fagforening=True,
         a_kasse=True,
         boligejer=True,
+        stoetter_velgoerenhed=True,
         indkomstaar=2026,
     )
     save_profil(profil, path)
@@ -55,6 +56,7 @@ def test_run_setup_interactive_prompts(tmp_path, monkeypatch):
             "j",  # fagforening
             "j",  # a_kasse
             "n",  # boligejer
+            "j",  # stoetter_velgoerenhed
             "2026",  # indkomstaar
         ]
     )
@@ -73,3 +75,4 @@ def test_run_setup_interactive_prompts(tmp_path, monkeypatch):
     assert loaded.fagforening is True
     assert loaded.a_kasse is True
     assert loaded.boligejer is False
+    assert loaded.stoetter_velgoerenhed is True

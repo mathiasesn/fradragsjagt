@@ -73,6 +73,9 @@ def run_setup(interactive: bool) -> int:
         fagforening = _spoerg_bool("Er du medlem af en fagforening", False)
         a_kasse = _spoerg_bool("Er du medlem af en a-kasse", False)
         boligejer = _spoerg_bool("Er du boligejer", False)
+        stoetter_velgoerenhed = _spoerg_bool(
+            "Donerer du til godkendte/velgørende foreninger", False
+        )
         indkomstaar = _spoerg_int("Hvilket indkomstår gælder profilen", 2026)
 
         profil = Profil(
@@ -85,6 +88,7 @@ def run_setup(interactive: bool) -> int:
             fagforening=fagforening,
             a_kasse=a_kasse,
             boligejer=boligejer,
+            stoetter_velgoerenhed=stoetter_velgoerenhed,
             indkomstaar=indkomstaar,
         )
     else:

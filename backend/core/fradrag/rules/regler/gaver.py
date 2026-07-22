@@ -15,7 +15,7 @@ except ImportError:
 def tjek_gaver(oplysninger: Skatteoplysninger, profil: Profil) -> list[FradragsForslag]:
     forslag: list[FradragsForslag] = []
 
-    if _er_lav(oplysninger.gaver_almenvelgoerende):
+    if profil.stoetter_velgoerenhed and _er_lav(oplysninger.gaver_almenvelgoerende):
         forslag.append(
             FradragsForslag(
                 navn="Gaver til almennyttige foreninger (§8A)",
