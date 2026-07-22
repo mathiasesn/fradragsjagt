@@ -2,11 +2,7 @@
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
-# Gør 'core'/'cli' importérbare, også når filen køres uden for pytest.
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import pytest
 
 from core import DISCLAIMER
 from core.models import (
@@ -113,20 +109,22 @@ def test_byg_rapport_uden_beregning_degraderer_paent():
     assert DISCLAIMER in rapport
 
 
-def test_byg_rapport_viser_restskat():
-    oplysninger = Skatteoplysninger(loen=450000.0, a_skat_indeholdt=100000.0, am_bidrag_indeholdt=30000.0)
+@pytest.mark.parametrize(
+    ("a_skat", "am_bidrag", "forventet_overskrift"),
+    [
+        (100000.0, 30000.0, "Forventet restskat: 20.000 kr."),
+        (140000.0, 36000.0, "Forventet overskydende skat: 26.000 kr."),
+    ],
+)
+def test_byg_rapport_viser_projiceret_aarsopgoerelse(a_skat, am_bidrag, forventet_overskrift):
+    oplysninger = Skatteoplysninger(
+        loen=450000.0, a_skat_indeholdt=a_skat, am_bidrag_indeholdt=am_bidrag
+    )
+
     rapport = byg_rapport(oplysninger, _profil(), _beregning(), _forslag())
 
     assert "Tidlig årsopgørelse" in rapport
-    assert "Forventet restskat: 20.000 kr." in rapport
-
-
-def test_byg_rapport_viser_overskydende_skat():
-    oplysninger = Skatteoplysninger(loen=450000.0, a_skat_indeholdt=140000.0, am_bidrag_indeholdt=36000.0)
-    rapport = byg_rapport(oplysninger, _profil(), _beregning(), _forslag())
-
-    assert "Tidlig årsopgørelse" in rapport
-    assert "Forventet overskydende skat: 26.000 kr." in rapport
+    assert forventet_overskrift in rapport
 
 
 def test_byg_rapport_utilstraekkeligt_grundlag_for_aarsopgoerelse():

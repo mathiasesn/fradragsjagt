@@ -20,21 +20,19 @@ from .models import Skatteberegning, Skatteoplysninger, TidligAarsopgoerelse
 
 def projicer_aarsopgoerelse(
     oplysninger: Skatteoplysninger, beregning: Skatteberegning
-) -> TidligAarsopgoerelse:
+) -> TidligAarsopgoerelse | None:
     """Byg en `TidligAarsopgoerelse` ud fra parsede oplysninger og en
-    gennemført skatteberegning. Estimat — ingen rente/procenttillæg."""
+    gennemført skatteberegning. Estimat — ingen rente/procenttillæg.
 
-    tilstraekkeligt_grundlag = (
-        oplysninger.a_skat_indeholdt is not None and oplysninger.am_bidrag_indeholdt is not None
-    )
-    indbetalt = (oplysninger.a_skat_indeholdt or 0.0) + (oplysninger.am_bidrag_indeholdt or 0.0)
-    difference = beregning.samlet_skat - indbetalt
+    Returnerer None, hvis grundlaget er utilstrækkeligt: begge indeholdte
+    beløb (A-skat OG AM-bidrag) skal være kendt, ellers ville `indbetalt`
+    mangle en komponent og give en misvisende restskat.
+    """
+
+    if oplysninger.a_skat_indeholdt is None or oplysninger.am_bidrag_indeholdt is None:
+        return None
 
     return TidligAarsopgoerelse(
         samlet_beregnet_skat=beregning.samlet_skat,
-        indbetalt_skat=indbetalt,
-        difference=difference,
-        er_restskat=difference > 0,
-        beloeb=abs(difference),
-        tilstraekkeligt_grundlag=tilstraekkeligt_grundlag,
+        indbetalt_skat=oplysninger.a_skat_indeholdt + oplysninger.am_bidrag_indeholdt,
     )

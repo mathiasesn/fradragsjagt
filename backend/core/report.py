@@ -62,7 +62,7 @@ def byg_rapport(
         linjer.append("## Tidlig årsopgørelse")
         linjer.append("")
         opgoerelse = projicer_aarsopgoerelse(oplysninger, beregning)
-        if not opgoerelse.tilstraekkeligt_grundlag:
+        if opgoerelse is None:
             linjer.append(
                 "_Indeholdt A-skat/AM-bidrag mangler i grundlaget, så restskat/overskydende "
                 "skat kan ikke projiceres._"

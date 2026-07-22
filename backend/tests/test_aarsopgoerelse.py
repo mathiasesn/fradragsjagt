@@ -2,60 +2,59 @@
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
-# Gør 'core'/'cli' importérbare, også når filen køres uden for pytest.
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import pytest
 
 from core.aarsopgoerelse import projicer_aarsopgoerelse
 from core.models import Skatteberegning, Skatteoplysninger
 
 
 def _beregning(samlet_skat: float) -> Skatteberegning:
+    """Kun `samlet_skat` indgår i projektionen — de øvrige poster er irrelevante her."""
     return Skatteberegning(
-        personlig_indkomst=450000.0,
-        skattepligtig_indkomst=420000.0,
-        am_bidrag=36000.0,
-        bundskat=50000.0,
-        kommuneskat=100000.0,
-        kirkeskat=3000.0,
+        personlig_indkomst=0.0,
+        skattepligtig_indkomst=0.0,
+        am_bidrag=0.0,
+        bundskat=0.0,
+        kommuneskat=0.0,
+        kirkeskat=0.0,
         samlet_skat=samlet_skat,
     )
 
 
-def test_restskat_naar_beregnet_skat_overstiger_indbetalt():
-    oplysninger = Skatteoplysninger(a_skat_indeholdt=100000.0, am_bidrag_indeholdt=30000.0)
+@pytest.mark.parametrize(
+    ("a_skat", "am_bidrag", "forventet_indbetalt", "forventet_difference", "forventet_restskat"),
+    [
+        # Beregnet skat (150.000) overstiger det indeholdte -> restskat.
+        (100000.0, 30000.0, 130000.0, 20000.0, True),
+        # Det indeholdte overstiger den beregnede skat -> overskydende skat.
+        (140000.0, 36000.0, 176000.0, -26000.0, False),
+    ],
+)
+def test_projektion_udleder_restskat_og_overskydende_skat(
+    a_skat, am_bidrag, forventet_indbetalt, forventet_difference, forventet_restskat
+):
+    oplysninger = Skatteoplysninger(a_skat_indeholdt=a_skat, am_bidrag_indeholdt=am_bidrag)
+
     opgoerelse = projicer_aarsopgoerelse(oplysninger, _beregning(150000.0))
 
-    assert opgoerelse.tilstraekkeligt_grundlag is True
-    assert opgoerelse.er_restskat is True
-    assert opgoerelse.indbetalt_skat == 130000.0
-    assert opgoerelse.difference == 20000.0
-    assert opgoerelse.beloeb == 20000.0
+    assert opgoerelse is not None
+    assert opgoerelse.indbetalt_skat == forventet_indbetalt
+    assert opgoerelse.difference == forventet_difference
+    assert opgoerelse.er_restskat is forventet_restskat
+    assert opgoerelse.beloeb == abs(forventet_difference)
 
 
-def test_overskydende_skat_naar_indbetalt_overstiger_beregnet():
-    oplysninger = Skatteoplysninger(a_skat_indeholdt=140000.0, am_bidrag_indeholdt=36000.0)
-    opgoerelse = projicer_aarsopgoerelse(oplysninger, _beregning(150000.0))
+@pytest.mark.parametrize(
+    ("a_skat", "am_bidrag"),
+    [
+        (None, None),  # intet indeholdt kendt
+        (100000.0, None),  # kun A-skat kendt
+        (None, 30000.0),  # kun AM-bidrag kendt
+    ],
+)
+def test_utilstraekkeligt_grundlag_giver_ingen_projektion(a_skat, am_bidrag):
+    """Begge indeholdte beløb skal være kendt — ellers ville `indbetalt` mangle
+    en komponent og give en misvisende restskat."""
+    oplysninger = Skatteoplysninger(a_skat_indeholdt=a_skat, am_bidrag_indeholdt=am_bidrag)
 
-    assert opgoerelse.tilstraekkeligt_grundlag is True
-    assert opgoerelse.er_restskat is False
-    assert opgoerelse.indbetalt_skat == 176000.0
-    assert opgoerelse.difference == -26000.0
-    assert opgoerelse.beloeb == 26000.0
-
-
-def test_utilstraekkeligt_grundlag_naar_begge_indeholdte_felter_mangler():
-    oplysninger = Skatteoplysninger()
-    opgoerelse = projicer_aarsopgoerelse(oplysninger, _beregning(150000.0))
-
-    assert opgoerelse.tilstraekkeligt_grundlag is False
-    assert opgoerelse.indbetalt_skat == 0.0
-
-
-def test_utilstraekkeligt_grundlag_naar_kun_ét_indeholdt_felt_er_kendt():
-    oplysninger = Skatteoplysninger(a_skat_indeholdt=100000.0, am_bidrag_indeholdt=None)
-    opgoerelse = projicer_aarsopgoerelse(oplysninger, _beregning(150000.0))
-
-    assert opgoerelse.tilstraekkeligt_grundlag is False
+    assert projicer_aarsopgoerelse(oplysninger, _beregning(150000.0)) is None

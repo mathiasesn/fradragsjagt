@@ -103,10 +103,20 @@ class TidligAarsopgoerelse:
 
     samlet_beregnet_skat: float
     indbetalt_skat: float
-    difference: float  # samlet_beregnet_skat - indbetalt_skat
-    er_restskat: bool
-    beloeb: float  # abs(difference)
-    tilstraekkeligt_grundlag: bool
+
+    @property
+    def difference(self) -> float:
+        """Positiv = restskat, negativ = overskydende skat."""
+        return self.samlet_beregnet_skat - self.indbetalt_skat
+
+    @property
+    def er_restskat(self) -> bool:
+        return self.difference > 0
+
+    @property
+    def beloeb(self) -> float:
+        """Beløbet uden fortegn — det tal rapporten viser som overskrift."""
+        return abs(self.difference)
 
 
 @dataclass
