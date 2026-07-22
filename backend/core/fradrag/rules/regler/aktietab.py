@@ -24,7 +24,7 @@ def _tjek_aktietab(oplysninger: Skatteoplysninger, profil: Profil) -> list[Fradr
                     "aktieindkomst — men kun hvis tabet blev indberettet til Skattestyrelsen i det år, "
                     "det opstod (kildekravet). Tjek på skat.dk, om et ældre tab nogensinde er blevet "
                     "registreret, da det ellers ikke kan udnyttes senere."
-                ).replace(",", "."),
+                ),
                 saadan_indberetter_du=(
                     "Se rubrik 66/67 på din årsopgørelse under 'Aktier og investeringsbeviser'. Er "
                     "tabet ikke registreret, kan du kontakte Skattestyrelsen for at få det efterangivet "

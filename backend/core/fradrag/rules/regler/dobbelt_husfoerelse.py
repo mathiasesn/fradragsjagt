@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from ....models import FradragsForslag, Profil, Skatteoplysninger
 from ....rates_2026 import DOBBELT_HUSFOERELSE_SATS_PR_UGE
-from ..registry import _er_lav, fradragsregel
+from ..registry import _er_lav, fradragsregel, kr
 
 
 @fradragsregel
@@ -21,10 +21,10 @@ def tjek_dobbelt_husfoerelse(oplysninger: Skatteoplysninger, profil: Profil) -> 
                 begrundelse=(
                     "Din profil angiver dobbelt husførelse, men der er ikke registreret noget "
                     "fradrag for det. Standardsatsen er "
-                    f"{DOBBELT_HUSFOERELSE_SATS_PR_UGE:,.0f} kr pr. uge. Det kræver, at du har "
+                    f"{kr(DOBBELT_HUSFOERELSE_SATS_PR_UGE)} kr pr. uge. Det kræver, at du har "
                     "midlertidigt arbejde mindst 5 km fra din sædvanlige bopæl og opretholder "
                     "dobbelt husstand. Antal uger kan ikke estimeres automatisk her."
-                ).replace(",", "."),
+                ),
                 saadan_indberetter_du=(
                     "Indberet fradraget under øvrige lønmodtagerudgifter (felt 58) på "
                     "årsopgørelsen. Du skal kunne dokumentere det midlertidige arbejdssted og "

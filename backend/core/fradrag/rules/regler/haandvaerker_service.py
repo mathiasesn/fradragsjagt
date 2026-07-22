@@ -3,15 +3,8 @@
 from __future__ import annotations
 
 from ....models import FradragsForslag, Profil, Skatteoplysninger
-from ..registry import _er_lav, fradragsregel
-
-try:  # pragma: no cover - defensiv import
-    from ....rates_2026 import FRADRAG_VAERDI_PROCENT, HAANDVAERKERFRADRAG_MAX, SERVICEFRADRAG_MAX
-except ImportError:
-    HAANDVAERKERFRADRAG_MAX = 9_000.0  # kr/person 2026, grønt håndværkerfradrag, felt 460
-    SERVICEFRADRAG_MAX = 18_300.0  # kr/person 2026, servicefradrag, felt 461
-    # Grov værdi af et fradrag: ca. bundskat + kommuneskat, uden topskat/mellemskat-præcision.
-    FRADRAG_VAERDI_PROCENT = 0.26
+from ....rates_2026 import FRADRAG_VAERDI_PROCENT, HAANDVAERKERFRADRAG_MAX, SERVICEFRADRAG_MAX
+from ..registry import _er_lav, fradragsregel, kr
 
 
 @fradragsregel
@@ -32,8 +25,8 @@ def tjek_haandvaerker_service(oplysninger: Skatteoplysninger, profil: Profil) ->
                     "Du er boligejer, men har ikke indberettet håndværkerfradrag. Har du haft "
                     "energi-/klimarenovering udført i 2026 (fx isolering, varmepumpe, "
                     "vinduesudskiftning), kan du trække op til "
-                    f"{HAANDVAERKERFRADRAG_MAX:,.0f} kr fra pr. person."
-                ).replace(",", "."),
+                    f"{kr(HAANDVAERKERFRADRAG_MAX)} kr fra pr. person."
+                ),
                 saadan_indberetter_du=(
                     "Log ind på skat.dk -> Ret årsopgørelsen -> felt 460 'Håndværkerfradrag'. "
                     "Kræver digital betaling til en momsregistreret virksomhed og gemt faktura."
@@ -53,8 +46,8 @@ def tjek_haandvaerker_service(oplysninger: Skatteoplysninger, profil: Profil) ->
                 begrundelse=(
                     "Du er boligejer, men har ikke indberettet servicefradrag. Har du købt "
                     "rengøring, havearbejde eller børnepasning i hjemmet i 2026, kan du trække "
-                    f"op til {SERVICEFRADRAG_MAX:,.0f} kr fra pr. person."
-                ).replace(",", "."),
+                    f"op til {kr(SERVICEFRADRAG_MAX)} kr fra pr. person."
+                ),
                 saadan_indberetter_du=(
                     "Log ind på skat.dk -> Ret årsopgørelsen -> felt 461 'Servicefradrag'. "
                     "Kræver digital betaling til en momsregistreret virksomhed og gemt faktura."

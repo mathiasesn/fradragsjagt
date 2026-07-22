@@ -33,6 +33,12 @@ def _er_lav(vaerdi: float | None, taerskel: float = 0.0) -> bool:
     return vaerdi is None or vaerdi <= taerskel
 
 
+def kr(vaerdi: float) -> str:
+    """Formatér et beløb med dansk tusindtalsseparator (punktum), fx 31600 -> '31.600'."""
+
+    return f"{vaerdi:,.0f}".replace(",", ".")
+
+
 def _discover_regler() -> None:
     """Importér alle moduler i `rules/regler/`, så deres @fradragsregel-funktioner
     registreres i REGLER. Idempotent — importerer kun én gang pr. proces."""
@@ -46,6 +52,8 @@ def _discover_regler() -> None:
     for modinfo in pkgutil.iter_modules(regler_pakke.__path__):
         importlib.import_module(f"{regler_pakke.__name__}.{modinfo.name}")
 
+    # Sortér én gang, så regel-rækkefølgen er deterministisk uden at sortere pr. kald.
+    REGLER.sort(key=lambda r: r.__name__)
     _DISCOVERED = True
 
 
@@ -58,6 +66,6 @@ def find_oversete_fradrag(oplysninger: Skatteoplysninger, profil: Profil) -> lis
     _discover_regler()
 
     forslag: list[FradragsForslag] = []
-    for regel in sorted(REGLER, key=lambda r: r.__name__):
+    for regel in REGLER:
         forslag.extend(regel(oplysninger, profil))
     return forslag
