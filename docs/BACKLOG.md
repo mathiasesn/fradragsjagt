@@ -35,9 +35,10 @@ Regler på plads:
 
 Rapportvisning oven på den eksisterende motor: projekteret restskat / overskydende skat.
 
-- **Status:** implementeret. `aarsopgoerelse.projicer_aarsopgoerelse` (ren funktion) sammenholder `beregning.samlet_skat` med indeholdt A-skat + AM-bidrag og udleder restskat/overskydende skat. `byg_rapport` viser sektionen "Tidlig årsopgørelse" med tydeligt estimat-forbehold; projicerer kun når begge indeholdte beløb er kendt, ellers degraderes pænt. Ingen ny domænelogik i motoren.
+- **Status:** implementeret. `aarsopgoerelse.projicer_aarsopgoerelse` (ren funktion) sammenholder `beregning.samlet_skat` med indeholdt A-skat + AM-bidrag og udleder restskat eller overskydende skat. `byg_rapport` viser sektionen "Tidlig årsopgørelse" med headline (*"Forventet restskat / overskydende skat: X"*) og tydeligt estimat-forbehold. Ingen ny domænelogik i motoren.
+- **Grundlag:** projektionen kræver **begge** indeholdte beløb (`a_skat_indeholdt` og `am_bidrag_indeholdt`) — begge parses allerede af `parsing.py` fra en årsopgørelse. Mangler ét af dem, returnerer funktionen `None`, og rapporten degraderer med en note i stedet for at vise et misvisende tal (et delvist `indbetalt` ville puste restskatten kunstigt op).
 - **Pro:** næsten gratis givet `engine.py`; stærkt headline-output til `rapport`.
-- **Con:** nøjagtighed afhænger af komplet input — kræver tydelig *"estimat"*-forbehold.
+- **Con:** nøjagtighed afhænger af komplet input — kræver tydelig *"estimat"*-forbehold. Dag-til-dag rente og procenttillæg på restskat modelleres ikke.
 - **Design:** ren rapport-view over eksisterende beregning. Ingen ny domænelogik.
 
 ### 3. Skattetrin-beregning 🟢
@@ -117,5 +118,6 @@ Dette er en tidlig MVP. Kendte begrænsninger og planlagte forbedringer:
 - [ ] **Verificér 2026-satser mod skat.dk** — alle 2026-tal (inkl. faktoren på 0,64 for ekstra befordringsfradrag) er *best-effort fremskrivninger* og er markeret i koden. De skal verificeres mod skat.dk's officielle udmelding, før nogen indberetter for alvor.
 - [ ] **Fuld progressiv skattemodel** — skattemotoren er forenklet: skatteloftet er i dag en blød advarsel, ikke et hårdt loft, og det progressive grundlag er en tilnærmelse. Se noter i `engine.py`.
 - [ ] **Øvrige fradrag** — `renteudgifter`, `aktieindkomst` (aktieindkomstbeskatning), `civilstand` (ægtefælleoverførsel) og rejsefradrag parses/indsamles, men indgår endnu ikke i beregningen.
+- [ ] **Restskat uden rente og procenttillæg** — den tidlige årsopgørelse (roadmap 2) er en ren difference mellem beregnet og indeholdt skat. Dag-til-dag rente og procenttillæg ved betaling efter fristen modelleres ikke, så et *restskat*-tal er et gulv, ikke det beløb der faktisk opkræves. Arver desuden usikkerheden fra de uverificerede 2026-satser ovenfor.
 
 Bidrag er velkomne — se koden, verificér beregningerne, og åbn gerne en PR.
