@@ -9,6 +9,7 @@ import json
 import os
 
 from . import DISCLAIMER
+from .aarsopgoerelse import projicer_aarsopgoerelse
 from .models import FradragsForslag, Profil, Skatteberegning, Skatteoplysninger
 
 
@@ -55,6 +56,33 @@ def byg_rapport(
     else:
         linjer.append("_Skatteberegningen kunne ikke gennemføres (beregningsmodulet mangler eller fejlede)._")
     linjer.append("")
+
+    # Tidlig årsopgørelse
+    if beregning is not None:
+        linjer.append("## Tidlig årsopgørelse")
+        linjer.append("")
+        opgoerelse = projicer_aarsopgoerelse(oplysninger, beregning)
+        if not opgoerelse.tilstraekkeligt_grundlag:
+            linjer.append(
+                "_Indeholdt A-skat/AM-bidrag mangler i grundlaget, så restskat/overskydende "
+                "skat kan ikke projiceres._"
+            )
+        else:
+            linjer.append("| Post | Beløb |")
+            linjer.append("|---|---|")
+            linjer.append(f"| Beregnet skat | {_fmt_kr(opgoerelse.samlet_beregnet_skat)} |")
+            linjer.append(f"| Indbetalt/indeholdt skat | {_fmt_kr(opgoerelse.indbetalt_skat)} |")
+            linjer.append("")
+            if opgoerelse.er_restskat:
+                linjer.append(f"**Forventet restskat: {_fmt_kr(opgoerelse.beloeb)}**")
+            else:
+                linjer.append(f"**Forventet overskydende skat: {_fmt_kr(opgoerelse.beloeb)}**")
+            linjer.append("")
+            linjer.append(
+                "_Estimat: dag-til-dag rente og procenttillæg er ikke medregnet, og tallet "
+                "afhænger af, at alle relevante beløb er indtastet korrekt._"
+            )
+        linjer.append("")
 
     # Fradragsforslag
     linjer.append("## Sandsynlige oversete fradrag")

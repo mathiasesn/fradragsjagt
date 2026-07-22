@@ -96,6 +96,20 @@ class Skatteberegning:
 
 
 @dataclass
+class TidligAarsopgoerelse:
+    """Projiceret restskat/overskydende skat, udledt af en `Skatteberegning`
+    og den indeholdte skat i `Skatteoplysninger`. Rent rapport-view — påvirker
+    ikke selve skatteberegningen."""
+
+    samlet_beregnet_skat: float
+    indbetalt_skat: float
+    difference: float  # samlet_beregnet_skat - indbetalt_skat
+    er_restskat: bool
+    beloeb: float  # abs(difference)
+    tilstraekkeligt_grundlag: bool
+
+
+@dataclass
 class FradragsForslag:
     """Ét oversete-fradrag-forslag fundet af fradragstjekket."""
 

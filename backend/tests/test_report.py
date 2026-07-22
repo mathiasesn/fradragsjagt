@@ -111,3 +111,26 @@ def test_byg_rapport_uden_beregning_degraderer_paent():
 
     assert "kunne ikke gennemføres" in rapport
     assert DISCLAIMER in rapport
+
+
+def test_byg_rapport_viser_restskat():
+    oplysninger = Skatteoplysninger(loen=450000.0, a_skat_indeholdt=100000.0, am_bidrag_indeholdt=30000.0)
+    rapport = byg_rapport(oplysninger, _profil(), _beregning(), _forslag())
+
+    assert "Tidlig årsopgørelse" in rapport
+    assert "Forventet restskat: 20.000 kr." in rapport
+
+
+def test_byg_rapport_viser_overskydende_skat():
+    oplysninger = Skatteoplysninger(loen=450000.0, a_skat_indeholdt=140000.0, am_bidrag_indeholdt=36000.0)
+    rapport = byg_rapport(oplysninger, _profil(), _beregning(), _forslag())
+
+    assert "Tidlig årsopgørelse" in rapport
+    assert "Forventet overskydende skat: 26.000 kr." in rapport
+
+
+def test_byg_rapport_utilstraekkeligt_grundlag_for_aarsopgoerelse():
+    rapport = byg_rapport(_oplysninger(), _profil(), _beregning(), _forslag())
+
+    assert "Tidlig årsopgørelse" in rapport
+    assert "kan ikke projiceres" in rapport
