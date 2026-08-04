@@ -1,3 +1,20 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo/logo-light.svg">
+    <img src="assets/logo/logo-light.svg" alt="fradragsjagt" width="360">
+  </picture>
+</p>
+
+<p align="center">
+  <a href="https://github.com/mathiasesn/fradragsjagt/actions/workflows/ci.yml"><img src="https://github.com/mathiasesn/fradragsjagt/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+">
+  <img src="https://img.shields.io/badge/ruff-lint%20%2B%20format-261230.svg?logo=ruff&logoColor=white" alt="Ruff">
+  <img src="https://img.shields.io/badge/skatteår-2026-2ea44f.svg" alt="Skatteår 2026">
+  <img src="https://img.shields.io/badge/privacy-100%25%20lokal-success.svg" alt="100% lokal">
+</p>
+
 # fradragsjagt 🔍
 
 **Gratis, open source, lokal dansk fradrags- og skatteassistent. Kører på din egen maskine — og sender aldrig dine data væk.**
@@ -59,7 +76,9 @@ Ud over CLI'en kan `fradragsjagt` køres som en Claude Code-agent. `.claude/`-ma
 
 ## Fremtidigt arbejde / To-do
 
-Roadmap og kendte MVP-begrænsninger er flyttet til [`docs/BACKLOG.md`](docs/BACKLOG.md).
+Roadmap og kendte MVP-begrænsninger spores som [GitHub issues](https://github.com/mathiasesn/fradragsjagt/issues) — se labels `roadmap`, `ingestion` og `mvp-begrænsning`.
+
+Retningslinjen for alt planlagt arbejde: vi bygger **beregning og fradragsfund** der ikke kræver et live SKAT-datafeed, og hvor vores styrke — *"vi viser dig reglen og feltet"* — slår de kommercielle apps' black box. Vi bygger **ikke** realtids-dataindhentning eller auto-indberetning; det bryder med projektets løfte om lokal, privatlivsførst, du-indberetter-selv.
 
 ## Ansvarsfraskrivelse
 
