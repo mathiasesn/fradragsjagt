@@ -24,7 +24,7 @@ fetches their own PDFs and submits their own return.
 - `.claude/` — agent skills and commands for this repo.
 - `specs/` — task specs (e.g. this file's own spec: `specs/agents-md.md`).
 - `assets/` — logos and branding assets.
-- `ARCHI.md` — full architecture reference (repo root, ~18.5K, 15 numbered sections).
+- `ARCHI.md` — full architecture reference (repo root); see section 6 below.
 
 ## 3. Commands
 
@@ -48,7 +48,7 @@ then run `fradragsjagt --version`).
   never the reverse.
 - All 2026 tax rates/thresholds live only in `backend/core/rates_2026.py` — do not
   hardcode rate numbers elsewhere.
-- Ruff: line-length 110, target py310. Run `ruff format` before committing.
+- Ruff: line-length 110, target py310.
 
 ### Adding a new deduction rule
 
