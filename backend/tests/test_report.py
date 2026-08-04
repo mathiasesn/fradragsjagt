@@ -117,9 +117,7 @@ def test_byg_rapport_uden_beregning_degraderer_paent():
     ],
 )
 def test_byg_rapport_viser_projiceret_aarsopgoerelse(a_skat, am_bidrag, forventet_overskrift):
-    oplysninger = Skatteoplysninger(
-        loen=450000.0, a_skat_indeholdt=a_skat, am_bidrag_indeholdt=am_bidrag
-    )
+    oplysninger = Skatteoplysninger(loen=450000.0, a_skat_indeholdt=a_skat, am_bidrag_indeholdt=am_bidrag)
 
     rapport = byg_rapport(oplysninger, _profil(), _beregning(), _forslag())
 
