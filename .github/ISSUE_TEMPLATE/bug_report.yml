@@ -1,0 +1,113 @@
+name: Bug report
+description: Noget i fradragsjagt opfører sig forkert
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Søg venligst i [eksisterende issues](../../issues) før du opretter et nyt
+        — fejlen kan allerede være rapporteret eller bevidst udskudt.
+
+        **Indsæt aldrig personoplysninger.** fradragsjagt behandler skattedata,
+        og et issue er offentligt. Fjern CPR-numre, navne, adresser,
+        kontonumre, arbejdsgivere og faktiske beløb før du indsender —
+        eller erstat dem med pladsholdere (`123456-7890`, `250.000 kr`).
+        Vedhæft **aldrig** din årsopgørelse, forskudsopgørelse eller R75-PDF.
+
+  - type: dropdown
+    id: command
+    attributes:
+      label: Kommando
+      description: Hvilken kommando er berørt?
+      options:
+        - fradragsjagt setup
+        - fradragsjagt parse
+        - fradragsjagt beregn
+        - fradragsjagt fradragstjek
+        - fradragsjagt rapport
+        - en fradragsregel (kørsel / fagforening / pension / gaver / ...)
+        - andet / ikke kommando-specifikt
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Hvad skete der
+      description: Hvad gjorde kommandoen, og hvad forventede du i stedet?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduktion
+      description: |
+        Præcis kommando plus det mindste input der udløser fejlen — et
+        anonymiseret profil-udklip, de parsede felter, eller den tekst PDF'en
+        indeholdt. Fx:
+
+        ```
+        fradragsjagt beregn
+
+        profil (anonymiseret):
+        - Kommune: Aarhus
+        - Kirkeskat: ja
+        - Pendlerafstand: 42 km hver vej, 216 dage
+
+        parsede felter:
+        - A-indkomst: 500.000
+        - AM-bidrag: 40.000
+        ```
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Relevant output
+      description: >
+        Kommandoens output, stack trace eller den beregning der er forkert.
+        Anonymisér beløb hvis de er dine egne.
+      render: shell
+
+  - type: input
+    id: expected-number
+    attributes:
+      label: Forventet resultat
+      description: >
+        Hvis det er en beregnings- eller regelfejl: hvilket tal/fradrag burde
+        der stå, og hvad bygger du det på (satstabel, skat.dk-side, feltnummer)?
+      placeholder: "Kørselsfradrag burde være 8.640 kr, jf. satsen 2,23 kr/km over 24 km"
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Commit SHA for dit checkout (`git rev-parse --short HEAD`).
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Miljø
+      description: OS og Python-version.
+      placeholder: "Linux 6.8 x86_64 / Python 3.12"
+    validations:
+      required: true
+
+  - type: input
+    id: tax-year
+    attributes:
+      label: Skatteår
+      description: Hvilket skatteår gælder dine dokumenter? (fradragsjagt regner med 2026-satser.)
+      placeholder: "2026"
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Andet
+      description: Logs, screenshots (anonymiserede), relaterede issues.

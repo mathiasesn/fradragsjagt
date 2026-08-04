@@ -1,0 +1,86 @@
+name: Feature request
+description: Foreslå en ny funktion, regel eller ændret adfærd
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Søg venligst i [eksisterende issues](../../issues) før du opretter et nyt
+        — idéen kan allerede være foreslået, planlagt eller bevidst afvist.
+
+        **Indsæt aldrig personoplysninger.** Brug pladsholder-beløb og
+        anonymiserede profil-værdier i eksempler. Vedhæft aldrig rigtige
+        skatte-PDF'er.
+
+        To ting ligger uden for projektets rammer og bliver lukket:
+        automatisering af MitID-login, og indberetning til skat.dk på
+        brugerens vegne. fradragsjagt fortæller *hvilket felt* — du indberetter selv.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Område
+      options:
+        - fradragsjagt setup (profil-onboarding)
+        - fradragsjagt parse (PDF-parsing af årsopgørelse / forskudsopgørelse / R75)
+        - fradragsjagt beregn (skatteberegning, 2026-satser)
+        - fradragsjagt fradragstjek (find oversete fradrag)
+        - fradragsjagt rapport
+        - Ny eller ændret fradragsregel
+        - Satser eller kommuneskat-tabel
+        - fradrag-drafter-reviewer skill (forslag + verifikation)
+        - Framework-regler (CLAUDE.md / ARCHI.md)
+        - docs
+        - andet
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Hvad kan du ikke i dag, og hvad koster det dig?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Foreslået adfærd
+      description: >
+        Hvad skal der ske i stedet? For en ny fradragsregel: hvilket fradrag,
+        hvilke betingelser skal være opfyldt, hvordan beregnes beløbet, og
+        hvilket felt på skat.dk indberettes det i. For en satsændring: hvilken
+        sats, hvilket skatteår. For en parse-ændring: hvilket dokument og
+        hvilke felter.
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Kilde
+      description: >
+        Link til skat.dk, en satstabel eller lovhenvisning der understøtter
+        forslaget. Regler og satser accepteres kun med kilde.
+      placeholder: "https://skat.dk/... (§ / feltnummer)"
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Eksempel
+      description: En kommando plus det output du ønsker. Brug pladsholder-beløb.
+      render: shell
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Overvejede alternativer
+      description: Hvad har du prøvet eller forkastet, og hvorfor?
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Andet
+      description: Relaterede issues, eksempler fra andre værktøjer, skærmbilleder.
